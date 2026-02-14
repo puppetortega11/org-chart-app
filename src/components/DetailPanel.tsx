@@ -6,6 +6,8 @@ import { NetworkConnections } from "./NetworkConnections";
 
 interface DetailPanelProps {
   selectedId: string | null;
+  /** Company name for the relationship graph (e.g. from "Enter company name"). */
+  companyName?: string;
 }
 
 function getReportingChain(peopleList: OrgPerson[], personId: string): OrgPerson[] {
@@ -16,7 +18,7 @@ function getReportingChain(peopleList: OrgPerson[], personId: string): OrgPerson
   return [...getReportingChain(peopleList, manager.id), manager];
 }
 
-export function DetailPanel({ selectedId }: DetailPanelProps) {
+export function DetailPanel({ selectedId, companyName }: DetailPanelProps) {
   if (!selectedId) {
     return (
       <div className="text-gray-500 text-sm p-4">
@@ -30,7 +32,8 @@ export function DetailPanel({ selectedId }: DetailPanelProps) {
 
   const reportingChain = getReportingChain(people, selectedId);
   const directReports = people.filter((p: OrgPerson) => p.reportsToId === selectedId);
-  const { nodes, links } = buildRelationshipGraph(relationshipGraphInput);
+  const graphInput = { ...relationshipGraphInput, companyName: companyName || relationshipGraphInput.companyName };
+  const { nodes, links } = buildRelationshipGraph(graphInput);
 
   return (
     <div className="space-y-6">
@@ -81,7 +84,7 @@ export function DetailPanel({ selectedId }: DetailPanelProps) {
 
       <NetworkConnections personId={selectedId} mutualConnections={mutualConnections} />
 
-      <RelationshipGraph nodes={nodes} links={links} title="Relationship Graph" height={420} />
+      <RelationshipGraph nodes={nodes} links={links} title="Relationship Graph" height={420} companyName={companyName} />
     </div>
   );
 }

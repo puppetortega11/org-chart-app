@@ -1,6 +1,6 @@
 /**
  * Org chart data: hierarchy, mutual connections, and relationship graph input.
- * Edit this file to match your org and your LinkedIn/wiz.io data.
+ * Replace with your own account/org data. Use this as a template.
  */
 
 export interface OrgPerson {
@@ -14,44 +14,43 @@ export interface OrgPerson {
   directReportIds?: string[];
 }
 
-/** Flat list of everyone; reportsToId / directReportIds define the tree. */
+/** Flat list of everyone; reportsToId defines the tree. */
 export const people: OrgPerson[] = [
-  { id: "matthew-prince", name: "Matthew Prince", title: "CEO, Co-Founder", location: "San Francisco, CA", tags: ["C-Suite", "P1 - Highest Priority"], linkedInUrl: "https://www.linkedin.com/in/matthewprince", reportsToId: null, directReportIds: ["grant-bourzikas"] },
-  { id: "grant-bourzikas", name: "Grant Bourzikas", title: "CSO, SVP", location: "San Francisco, CA", tags: ["Security", "C-Suite", "P1 - Highest Priority"], linkedInUrl: "https://www.linkedin.com/in/grantbourzikas", reportsToId: "matthew-prince", directReportIds: ["blake-darche", "sri-pulla", "derek-chamorro"] },
-  { id: "blake-darche", name: "Blake Darche", title: "VP Security", reportsToId: "grant-bourzikas", directReportIds: [] },
-  { id: "sri-pulla", name: "Sri Pulla", title: "VP Engineering", reportsToId: "grant-bourzikas", directReportIds: [] },
-  { id: "derek-chamorro", name: "Derek Chamorro", title: "Director Security", reportsToId: "grant-bourzikas", directReportIds: [] },
+  { id: "ceo", name: "Jordan Smith", title: "CEO", location: "New York, NY", tags: ["C-Suite", "Decision maker"], reportsToId: null },
+  { id: "vp-sales", name: "Sam Rivera", title: "VP Sales", location: "Chicago, IL", tags: ["Sales", "Champion"], reportsToId: "ceo" },
+  { id: "vp-eng", name: "Alex Chen", title: "VP Engineering", location: "Austin, TX", tags: ["Technical"], reportsToId: "ceo" },
+  { id: "ae-east", name: "Morgan Taylor", title: "Account Executive, East", reportsToId: "vp-sales" },
+  { id: "ae-west", name: "Casey Jones", title: "Account Executive, West", reportsToId: "vp-sales" },
+  { id: "eng-lead", name: "Riley Kim", title: "Engineering Lead", reportsToId: "vp-eng" },
 ];
 
 /** Mutual connections for warm intros. Key = person id. */
 export const mutualConnections: Record<string, { name: string; summary: string; linkedInUrl: string }[]> = {
-  "grant-bourzikas": [
-    { name: "Blake Darche", summary: "Former colleague; security initiatives.\nCan speak to his leadership in incident response.", linkedInUrl: "https://www.linkedin.com/in/blakedarche" },
-    { name: "Sri Pulla", summary: "Met at RSA Conference 2023; zero-trust track.\nAlumni connection.", linkedInUrl: "https://www.linkedin.com/in/sripulla" },
-    { name: "Derek Chamorro", summary: "Cloudflare partner ecosystem; joint customer calls.\nStrong DDoS and edge security.", linkedInUrl: "https://www.linkedin.com/in/derekchamorro" },
+  "vp-sales": [
+    { name: "Morgan Taylor", summary: "Former colleague; worked together on enterprise deals.\nCan provide intro to the team.", linkedInUrl: "https://www.linkedin.com/in/example" },
+    { name: "Casey Jones", summary: "Same alumni network; met at conference.\nWarm relationship for outreach.", linkedInUrl: "https://www.linkedin.com/in/example" },
   ],
 };
 
-/** Input for the Relationship Graph (org ↔ LinkedIn 1st/2nd/3rd + wiz.io followers). */
+/** Input for the Relationship Graph (org ↔ LinkedIn 1st/2nd/3rd + company followers). */
 export const relationshipGraphInput = {
-  companyName: "wiz.io",
+  companyName: "Acme Corp",
   orgPeople: people.map((p) => ({ id: p.id, name: p.name })),
   linkedInConnections: [
-    { id: "blake-darche", name: "Blake Darche", degree: 1 as const, linkedInUrl: "https://www.linkedin.com/in/blakedarche" },
-    { id: "sri-pulla", name: "Sri Pulla", degree: 1 as const, linkedInUrl: "https://www.linkedin.com/in/sripulla" },
-    { id: "jane-security", name: "Jane Security", degree: 1 as const, linkedInUrl: "https://www.linkedin.com/in/janesecurity" },
-    { id: "alex-cloud", name: "Alex Cloud", degree: 2 as const, connectedVia: "blake-darche", linkedInUrl: "https://www.linkedin.com/in/alexcloud" },
-    { id: "derek-chamorro", name: "Derek Chamorro", degree: 2 as const, connectedVia: "blake-darche", linkedInUrl: "https://www.linkedin.com/in/derekchamorro" },
+    { id: "vp-sales", name: "Sam Rivera", degree: 1 as const, linkedInUrl: "https://www.linkedin.com/in/example" },
+    { id: "ae-east", name: "Morgan Taylor", degree: 1 as const, linkedInUrl: "https://www.linkedin.com/in/example" },
+    { id: "conn-1", name: "Jamie Lee", degree: 1 as const, linkedInUrl: "https://www.linkedin.com/in/example" },
+    { id: "conn-2", name: "Taylor Brooks", degree: 2 as const, connectedVia: "vp-sales", linkedInUrl: "https://www.linkedin.com/in/example" },
+    { id: "ae-west", name: "Casey Jones", degree: 2 as const, connectedVia: "ae-east", linkedInUrl: "https://www.linkedin.com/in/example" },
   ],
   companyFollowers: [
-    { id: "grant-bourzikas", name: "Grant Bourzikas", linkedInUrl: "https://www.linkedin.com/in/grantbourzikas" },
-    { id: "matthew-prince", name: "Matthew Prince", linkedInUrl: "https://www.linkedin.com/in/matthewprince" },
+    { id: "ceo", name: "Jordan Smith", linkedInUrl: "https://www.linkedin.com/in/example" },
+    { id: "vp-sales", name: "Sam Rivera", linkedInUrl: "https://www.linkedin.com/in/example" },
   ],
   orgToNetworkMappings: [
-    { orgPersonId: "blake-darche", networkNodeId: "blake-darche" },
-    { orgPersonId: "sri-pulla", networkNodeId: "sri-pulla" },
-    { orgPersonId: "derek-chamorro", networkNodeId: "derek-chamorro" },
-    { orgPersonId: "grant-bourzikas", networkNodeId: "grant-bourzikas" },
-    { orgPersonId: "matthew-prince", networkNodeId: "matthew-prince" },
+    { orgPersonId: "vp-sales", networkNodeId: "vp-sales" },
+    { orgPersonId: "ae-east", networkNodeId: "ae-east" },
+    { orgPersonId: "ae-west", networkNodeId: "ae-west" },
+    { orgPersonId: "ceo", networkNodeId: "ceo" },
   ],
 };

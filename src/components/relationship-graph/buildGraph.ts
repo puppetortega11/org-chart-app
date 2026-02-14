@@ -1,12 +1,12 @@
 import type { RelationshipGraphInput, GraphNode, GraphLink, NodeId } from "./types";
 
 const ME_NODE_ID: NodeId = "__me__";
-const COMPANY_NODE_ID: NodeId = "__company_wiz__";
+const COMPANY_NODE_ID: NodeId = "__company__";
 
 export function buildRelationshipGraph(input: RelationshipGraphInput): { nodes: GraphNode[]; links: GraphLink[] } {
   const nodes: GraphNode[] = [];
   const links: GraphLink[] = [];
-  const companyName = input.companyName ?? "wiz.io";
+  const companyName = input.companyName ?? "Company";
 
   nodes.push({ id: ME_NODE_ID, name: "You", type: "me" });
   nodes.push({ id: COMPANY_NODE_ID, name: companyName, type: "company" });
@@ -40,7 +40,7 @@ export function buildRelationshipGraph(input: RelationshipGraphInput): { nodes: 
   }
 
   for (const f of input.companyFollowers) {
-    const id = `wiz:${f.id}`;
+    const id = `follower:${f.id}`;
     nodes.push({ id, name: f.name, type: "company_follower", linkedInUrl: f.linkedInUrl });
     links.push({ source: id, target: COMPANY_NODE_ID, type: "follows_company" });
   }
@@ -49,8 +49,8 @@ export function buildRelationshipGraph(input: RelationshipGraphInput): { nodes: 
   for (const m of input.orgToNetworkMappings) {
     const sourceId = `org:${m.orgPersonId}`;
     const liId = `li:${m.networkNodeId}`;
-    const wizId = `wiz:${m.networkNodeId}`;
-    const targetId = nodeIds.has(liId) ? liId : nodeIds.has(wizId) ? wizId : liId;
+    const followerId = `follower:${m.networkNodeId}`;
+    const targetId = nodeIds.has(liId) ? liId : nodeIds.has(followerId) ? followerId : liId;
     if (targetId !== sourceId && nodeIds.has(sourceId) && nodeIds.has(targetId)) {
       links.push({ source: sourceId, target: targetId, type: "org_match" });
     }

@@ -9,6 +9,8 @@ export interface RelationshipGraphProps {
   width?: number;
   height?: number;
   className?: string;
+  /** Company name for legend and labels (e.g. "Acme Corp"). */
+  companyName?: string;
 }
 
 const NODE_COLORS: Record<NodeType, string> = {
@@ -38,6 +40,7 @@ export function RelationshipGraph({
   width,
   height = 400,
   className = "",
+  companyName: companyLabel = "Company",
 }: RelationshipGraphProps) {
   const graphData = useMemo(() => ({
     nodes: nodes.map((n) => ({ ...n })),
@@ -77,7 +80,7 @@ export function RelationshipGraph({
       node.type === "linkedin_1" ? "1st degree" :
       node.type === "linkedin_2" ? "2nd degree" :
       node.type === "linkedin_3" ? "3rd degree" :
-      node.type === "company_follower" ? "Follows wiz.io" :
+      node.type === "company_follower" ? `Follows ${companyLabel}` :
       node.type === "company" ? "Company" : "";
     const lines = [node.name, typeLabel];
     if (node.linkedInUrl) lines.push("LinkedIn");
@@ -105,7 +108,7 @@ export function RelationshipGraph({
     <section className={className}>
       <h3 className="text-sm font-semibold text-gray-300 mb-2">{title}</h3>
       <p className="text-xs text-gray-500 mb-2">
-        You (center) · 1st/2nd/3rd degree LinkedIn · org chart · wiz.io followers. Drag to pan, scroll to zoom, click node for LinkedIn.
+        You (center) · 1st/2nd/3rd degree LinkedIn · org chart · company followers. Drag to pan, scroll to zoom, click node for LinkedIn.
       </p>
       <div className="rounded-lg border border-gray-700/50 bg-gray-900/50 overflow-hidden">
         <ForceGraph2D
@@ -132,8 +135,8 @@ export function RelationshipGraph({
         <span><span className="inline-block w-2 h-2 rounded-full bg-[#0ea5e9] mr-1" />1st</span>
         <span><span className="inline-block w-2 h-2 rounded-full bg-[#38bdf8] mr-1" />2nd</span>
         <span><span className="inline-block w-2 h-2 rounded-full bg-[#7dd3fc] mr-1" />3rd</span>
-        <span><span className="inline-block w-2 h-2 rounded-full bg-[#f59e0b] mr-1" />Wiz follower</span>
-        <span><span className="inline-block w-2 h-2 rounded-full bg-[#a855f7] mr-1" />wiz.io</span>
+        <span><span className="inline-block w-2 h-2 rounded-full bg-[#f59e0b] mr-1" />Company follower</span>
+        <span><span className="inline-block w-2 h-2 rounded-full bg-[#a855f7] mr-1" />{companyLabel}</span>
       </div>
     </section>
   );
